@@ -1,0 +1,24 @@
+type Airflow {
+  """
+  The source directory for the project.
+  """
+  pub source: Directory! @defaultPath(path: "/")
+
+  """
+  The base image to use.
+  """
+  pub baseImageAddress: String! = "ghcr.io/astral-sh/uv:alpine3.22"
+  """
+  Lint the source.
+  """
+  pub lint(): Void @check {
+    container.from(baseImageAddress).
+    withDirectory("/workspace", source).
+    withWorkdir("/workspace").
+    withExec(["uv", "tool", "run", "ruff", "check", "--select", "AIR301,AIR302", "."]).
+    sync
+
+    null
+  }
+}
+
