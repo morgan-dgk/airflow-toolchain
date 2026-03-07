@@ -15,10 +15,30 @@ type Airflow {
     container.from(baseImageAddress).
     withDirectory("/workspace", source).
     withWorkdir("/workspace").
-    withExec(["uv", "tool", "run", "ruff", "check", "--select", "AIR301,AIR302", "."]).
+    withExec(["uv", "tool", "run", "ruff", "check", "--preview", "--select", "AIR301,AIR302,AIR321", "--show-fixes", "."]).
     sync
 
     null
+  }
+
+  """
+  Fix resolveable linting issues.
+  """
+  pub fix(): Changeset @generate {
+    let fixed = container.from(baseImageAddress).
+    withDirectory("/workspace", source).
+    withWorkdir("/workspace").
+    withExec(["uv", "tool", "run", "ruff", "check", "--preview", "--exit-zero", "--fix", "--select", "AIR301,AIR302,AIR321", "."]).
+    directory(".")
+
+    let fixedPy = directory.
+    withDirectory(".", fixed, include: ["**/*.py"])
+
+    let sourcePy = directory.
+    withDirectory(".", source, include: ["**/*.py"])
+
+    fixedPy.
+    changes(sourcePy)
   }
 }
 
