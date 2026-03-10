@@ -9,13 +9,9 @@ type Airflow {
   """
   pub baseImageAddress: String! = "ghcr.io/astral-sh/uv:alpine3.22"
   """
-  The relative path to files which should be linted.
-  """
-  pub pathToLint: String! = "dags"
-  """
   Lint the source.
   """
-  pub lint(): Void @check {
+  pub lint(pathToLint: String! = "dags"): Void @check {
     container.from(baseImageAddress).
     withDirectory("/workspace", source).
     withWorkdir("/workspace").
@@ -28,7 +24,7 @@ type Airflow {
   """
   Fix resolveable linting issues.
   """
-  pub fix(): Changeset @generate {
+  pub fix(pathToLint: String! = "dags"): Changeset @generate {
     let fixed = container.from(baseImageAddress).
     withDirectory("/workspace", source).
     withWorkdir("/workspace").
