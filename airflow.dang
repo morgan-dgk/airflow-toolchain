@@ -28,7 +28,7 @@ type Airflow {
     let fixed = container.from(baseImageAddress).
     withDirectory("/workspace", source).
     withWorkdir("/workspace").
-    withExec(["uv", "tool", "run", "ruff", "check", "--preview", "--exit-zero", "--fix", "--select", "AIR301,AIR302,AIR311,AIR312", "."]).
+    withExec(["uv", "tool", "run", "ruff", "check", "--preview", "--exit-zero", "--fix", "--select", "AIR301,AIR302,AIR321,AIR311,AIR312", "."]).
     directory(".")
 
     let fixedPy = directory.
